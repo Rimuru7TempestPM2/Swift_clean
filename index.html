@@ -147,6 +147,45 @@
                 })
                 .catch(() => alert("❌ Connection error."));
         });
+
+        // NEW CODE: Create a summary of selected items
+            let summary = [];
+            window.config.categories.forEach(cat => {
+                cat.items.forEach(item => {
+                    if (selectedItems.has(item.id)) summary.push(item.name);
+                });
+            });
+            const itemsList = summary.join(", ");
+
+            // NEW CODE: Background logging to Google Sheets
+            const params = new URLSearchParams({
+                name: name,
+                phone: phone,
+                estate: estate,
+                services: itemsList,
+                totalPrice: total
+            });
+
+            fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
+                .then(() => {
+                    // NEW CODE: The WhatsApp Supreme Redirect
+                    const message = `*NEW BOOKING: SWIFTCLEAN*\n\n` +
+                                    `*Client:* ${name}\n` +
+                                    `*Phone:* ${phone}\n` +
+                                    `*Estate:* ${estate}\n` +
+                                    `*Services:* ${itemsList}\n` +
+                                    `*Total:* ${total}\n\n` +
+                                    `Please confirm pick-up time.`;
+
+                    const whatsappUrl = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    
+                    window.location.href = whatsappUrl; // Triggers the WhatsApp App
+                })
+                .catch(() => {
+                    alert("Error connecting. Try again.");
+                    this.disabled = false;
+                });
+        });
     </script>
 </body>
 </html>
