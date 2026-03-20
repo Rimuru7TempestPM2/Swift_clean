@@ -6,7 +6,6 @@
     <title>SwiftClean Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .loading-spinner { border-top-color: transparent; }
         .service-card.active { border-color: #0ea5e9; background-color: #f0f9ff; }
     </style>
 </head>
@@ -25,7 +24,7 @@
                 Your Details
             </h2>
             <div class="space-y-4">
-                <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400">
                 <input type="tel" id="cust-phone" placeholder="Phone (M-Pesa)" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
                 <select id="estate-select" class="w-full p-4 bg-gray-50 border rounded-xl outline-none"></select>
             </div>
@@ -36,17 +35,16 @@
                 <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">2</span>
                 Select Services
             </h2>
-            </section>
-
+        </section>
     </main>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">
         <div class="max-w-md mx-auto flex items-center justify-between">
             <div>
                 <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Estimated Total</p>
                 <p id="total-price" class="text-2xl font-black text-blue-600">Ksh 0</p>
             </div>
-            <button id="submit-btn" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all">
+            <button id="submit-btn" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold active:scale-95 transition-all">
                 Book Now
             </button>
         </div>
@@ -60,21 +58,17 @@
             const cfg = window.config;
             if (!cfg) return;
 
-            // 1. Initial UI Setup
             document.getElementById('biz-name').textContent = cfg.businessName;
             document.getElementById('biz-tagline').textContent = cfg.tagline;
             document.getElementById('header-bg').style.backgroundColor = cfg.primaryColor;
             document.getElementById('submit-btn').style.backgroundColor = cfg.primaryColor;
 
-            // Populate Estates
             const estateSelect = document.getElementById('estate-select');
             cfg.estates.forEach(e => estateSelect.add(new Option(e, e)));
 
-            // 2. Build Service Categories
             const master = document.getElementById('services-master');
             cfg.categories.forEach(cat => {
                 let catHtml = `<div class="mb-6"><h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3 px-2">${cat.name}</h3><div class="grid gap-3">`;
-                
                 cat.items.forEach(item => {
                     catHtml += `
                         <div onclick="toggleItem('${item.id}', ${item.price})" id="card-${item.id}" class="service-card bg-white p-4 rounded-xl border-2 border-gray-100 cursor-pointer transition-all">
@@ -90,7 +84,7 @@
             });
         });
 
-        function toggleItem(id, price) {
+        function toggleItem(id) {
             const card = document.getElementById(`card-${id}`);
             if (selectedItems.has(id)) {
                 selectedItems.delete(id);
@@ -112,7 +106,7 @@
             document.getElementById('total-price').textContent = `Ksh ${total}`;
         }
 
-        // 3. The "Forensic" Submission
+        // --- THE SUPREME SUBMISSION ---
         document.getElementById('submit-btn').addEventListener('click', function() {
             const name = document.getElementById('cust-name').value;
             const phone = document.getElementById('cust-phone').value;
@@ -122,33 +116,8 @@
             if (!name || !phone) return alert("Please fill in your name and phone.");
 
             this.disabled = true;
-            this.textContent = "Sending...";
+            this.textContent = "Connecting...";
 
-            // Create a summary of picked items
-            let summary = [];
-            window.config.categories.forEach(cat => {
-                cat.items.forEach(item => {
-                    if (selectedItems.has(item.id)) summary.push(item.name);
-                });
-            });
-
-            const params = new URLSearchParams({
-                name: name,
-                phone: phone,
-                estate: estate,
-                services: summary.join(", "),
-                totalPrice: total
-            });
-
-            fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
-                .then(() => {
-                    alert("✅ Success! SwiftClean will call you for pick-up.");
-                    location.reload();
-                })
-                .catch(() => alert("❌ Connection error."));
-        });
-
-        // NEW CODE: Create a summary of selected items
             let summary = [];
             window.config.categories.forEach(cat => {
                 cat.items.forEach(item => {
@@ -157,7 +126,6 @@
             });
             const itemsList = summary.join(", ");
 
-            // NEW CODE: Background logging to Google Sheets
             const params = new URLSearchParams({
                 name: name,
                 phone: phone,
@@ -166,10 +134,10 @@
                 totalPrice: total
             });
 
-            //1. Log to Google Sheets
-        fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
+            // 1. Log to Google Sheets
+            fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
                 .then(() => {
-                    // NEW CODE: The WhatsApp Supreme Redirect
+                    // 2. Immediate WhatsApp Redirect
                     const message = `*NEW BOOKING: SWIFTCLEAN*\n\n` +
                                     `*Client:* ${name}\n` +
                                     `*Phone:* ${phone}\n` +
@@ -179,11 +147,10 @@
                                     `Please confirm pick-up time.`;
 
                     const whatsappUrl = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(message)}`;
-                    
-                    window.location.href = whatsappUrl; // Triggers the WhatsApp App
+                    window.location.href = whatsappUrl;
                 })
                 .catch(() => {
-                    alert("Error connecting. Try again.");
+                    alert("Connection error. Please check your internet.");
                     this.disabled = false;
                     this.textContent = "Book Now";
                 });
