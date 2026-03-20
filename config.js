@@ -5,7 +5,7 @@ const businessConfig = {
     primaryColor: "#0ea5e9", // SwiftClean Sky Blue
     
     // 1. YOUR PLUMBING - Replace this with your Google Script URL
-    webAppUrl: "https://script.google.com/macros/s/AKfycbys5Wcptv0-aDZOwIunmeLdb9wp-cLIom5Svwi1buWrPHAvwZIYKKdoA4HEEfz8eMcpPw/exec", 
+    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
     
     // 2. THE SERVICE INVENTORY (From the Flyer)
     categories: [
