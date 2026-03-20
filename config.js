@@ -6,6 +6,9 @@ const businessConfig = {
     
     // 1. YOUR PLUMBING - Replace this with your Google Script URL
     webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
+
+    // 2. NEW CODE: The WhatsApp Number in International Format (254...)
+    whatsappNumber: "254758811941",
     
     // 2. THE SERVICE INVENTORY (From the Flyer)
     categories: [
