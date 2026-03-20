@@ -3,112 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Now</title>
+    <title>SwiftClean Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .loading-spinner { border-top-color: transparent; }
+        .service-card.active { border-color: #0ea5e9; background-color: #f0f9ff; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased">
+<body class="bg-gray-50 text-gray-900 font-sans antialiased pb-24">
 
-    <header class="p-6 text-white shadow-md" id="header-bg">
-        <div class="max-w-md mx-auto">
-            <h1 id="biz-name" class="text-3xl font-bold tracking-tight">Loading...</h1>
-            <p id="biz-tagline" class="opacity-90 text-sm mt-1"></p>
-        </div>
+    <header id="header-bg" class="p-8 text-white shadow-lg text-center">
+        <h1 id="biz-name" class="text-3xl font-bold uppercase tracking-widest"></h1>
+        <p id="biz-tagline" class="mt-2 text-sm font-light opacity-90"></p>
     </header>
 
-    <main class="max-w-md mx-auto p-4 space-y-6">
-        <section class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
-            <h2 class="text-xl font-bold mb-4">Our Services</h2>
-            <div id="services-container" class="space-y-3"></div>
+    <main class="max-w-md mx-auto p-4 space-y-8">
+        
+        <section class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+            <h2 class="text-lg font-bold mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">1</span>
+                Your Details
+            </h2>
+            <div class="space-y-4">
+                <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                <input type="tel" id="cust-phone" placeholder="Phone (M-Pesa)" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
+                <select id="estate-select" class="w-full p-4 bg-gray-50 border rounded-xl outline-none"></select>
+            </div>
         </section>
 
-        <section class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
-            <h2 class="text-xl font-bold mb-4">Book a Pick-up</h2>
-            <form id="booking-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Your Name</label>
-                    <input type="text" name="name" required class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Phone Number (M-Pesa)</label>
-                    <input type="tel" name="phone" placeholder="07..." required class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Select Service</label>
-                    <select id="service-select" name="service" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg outline-none"></select>
-                </div>
+        <section id="services-master" class="space-y-6">
+            <h2 class="text-lg font-bold px-2 flex items-center">
+                <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">2</span>
+                Select Services
+            </h2>
+            </section>
 
-                <button type="submit" id="submit-btn" class="w-full py-4 px-6 rounded-xl text-white font-bold text-lg shadow-lg active:scale-95 transition-transform flex justify-center items-center">
-                    <span id="btn-text">Confirm Booking</span>
-                    <div id="btn-loader" class="hidden w-6 h-6 border-4 border-white border-solid rounded-full animate-spin loading-spinner"></div>
-                </button>
-            </form>
-            <div id="status-msg" class="hidden mt-4 p-4 rounded-lg text-center font-medium"></div>
-        </section>
     </main>
 
-    <script src="config.js"></script>
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div>
+                <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Estimated Total</p>
+                <p id="total-price" class="text-2xl font-black text-blue-600">Ksh 0</p>
+            </div>
+            <button id="submit-btn" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all">
+                Book Now
+            </button>
+        </div>
+    </div>
 
+    <script src="config.js"></script>
     <script>
+        let selectedItems = new Set();
+
         document.addEventListener('DOMContentLoaded', () => {
             const cfg = window.config;
             if (!cfg) return;
 
-            document.title = cfg.businessName;
+            // 1. Initial UI Setup
             document.getElementById('biz-name').textContent = cfg.businessName;
             document.getElementById('biz-tagline').textContent = cfg.tagline;
             document.getElementById('header-bg').style.backgroundColor = cfg.primaryColor;
             document.getElementById('submit-btn').style.backgroundColor = cfg.primaryColor;
 
-            const servicesList = document.getElementById('services-container');
-            const serviceSelect = document.getElementById('service-select');
+            // Populate Estates
+            const estateSelect = document.getElementById('estate-select');
+            cfg.estates.forEach(e => estateSelect.add(new Option(e, e)));
 
-            cfg.services.forEach(s => {
-                servicesList.innerHTML += `
-                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg border-l-4" style="border-color: ${cfg.primaryColor}">
-                        <span class="font-medium text-gray-700">${s.name}</span>
-                        <span class="font-bold text-gray-900">${s.price}</span>
-                    </div>`;
-                serviceSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+            // 2. Build Service Categories
+            const master = document.getElementById('services-master');
+            cfg.categories.forEach(cat => {
+                let catHtml = `<div class="mb-6"><h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3 px-2">${cat.name}</h3><div class="grid gap-3">`;
+                
+                cat.items.forEach(item => {
+                    catHtml += `
+                        <div onclick="toggleItem('${item.id}', ${item.price})" id="card-${item.id}" class="service-card bg-white p-4 rounded-xl border-2 border-gray-100 cursor-pointer transition-all">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-gray-700">${item.name}</span>
+                                <span class="text-blue-600 font-black">Ksh ${item.price}</span>
+                            </div>
+                            ${item.note ? `<p class="text-xs text-green-600 mt-1 font-medium">★ ${item.note}</p>` : ''}
+                        </div>`;
+                });
+                catHtml += `</div></div>`;
+                master.innerHTML += catHtml;
+            });
+        });
+
+        function toggleItem(id, price) {
+            const card = document.getElementById(`card-${id}`);
+            if (selectedItems.has(id)) {
+                selectedItems.delete(id);
+                card.classList.remove('active', 'border-blue-500');
+            } else {
+                selectedItems.add(id);
+                card.classList.add('active', 'border-blue-500');
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            window.config.categories.forEach(cat => {
+                cat.items.forEach(item => {
+                    if (selectedItems.has(item.id)) total += item.price;
+                });
+            });
+            document.getElementById('total-price').textContent = `Ksh ${total}`;
+        }
+
+        // 3. The "Forensic" Submission
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const estate = document.getElementById('estate-select').value;
+            const total = document.getElementById('total-price').textContent;
+
+            if (!name || !phone) return alert("Please fill in your name and phone.");
+
+            this.disabled = true;
+            this.textContent = "Sending...";
+
+            // Create a summary of picked items
+            let summary = [];
+            window.config.categories.forEach(cat => {
+                cat.items.forEach(item => {
+                    if (selectedItems.has(item.id)) summary.push(item.name);
+                });
             });
 
-            const form = document.getElementById('booking-form');
-            const btn = document.getElementById('submit-btn');
-            const btnText = document.getElementById('btn-text');
-            const btnLoader = document.getElementById('btn-loader');
-            const statusMsg = document.getElementById('status-msg');
-
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                btn.disabled = true;
-                btnText.classList.add('hidden');
-                btnLoader.classList.remove('hidden');
-
-                // Convert form data to URL parameters (Crucial for Google Apps Script)
-                const formData = new FormData(this);
-                const params = new URLSearchParams(formData).toString();
-                const finalUrl = cfg.webAppUrl + "?" + params;
-
-                fetch(finalUrl, { method: 'POST', mode: 'no-cors' })
-                    .then(() => {
-                        statusMsg.textContent = "✅ Booking received! We will call you shortly.";
-                        statusMsg.className = "mt-4 p-4 rounded-lg text-center font-medium bg-green-100 text-green-800";
-                        statusMsg.classList.remove('hidden');
-                        form.reset();
-                    })
-                    .catch(() => {
-                        statusMsg.textContent = "❌ Connection error. Try again.";
-                        statusMsg.className = "mt-4 p-4 rounded-lg text-center font-medium bg-red-100 text-red-800";
-                        statusMsg.classList.remove('hidden');
-                    })
-                    .finally(() => {
-                        btn.disabled = false;
-                        btnText.classList.remove('hidden');
-                        btnLoader.classList.add('hidden');
-                    });
+            const params = new URLSearchParams({
+                name: name,
+                phone: phone,
+                estate: estate,
+                services: summary.join(", "),
+                totalPrice: total
             });
+
+            fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
+                .then(() => {
+                    alert("✅ Success! SwiftClean will call you for pick-up.");
+                    location.reload();
+                })
+                .catch(() => alert("❌ Connection error."));
         });
     </script>
 </body>
