@@ -1,22 +1,48 @@
-// config.js - The Business Identity Layer
+// config.js - The Digital Identity of SwiftClean Laundry
 const businessConfig = {
-    businessName: "Thika Premium Laundry", 
-    primaryColor: "#2563eb", 
-    tagline: "Fresh Clothes, Delivered Fast.",
+    businessName: "SwiftClean Laundry",
+    tagline: "Free pick up and delivery in Thika and all areas around.",
+    primaryColor: "#0ea5e9", // SwiftClean Sky Blue
     
-    // REPLACE THE URL BELOW WITH YOUR GOOGLE SCRIPT URL
-    webAppUrl: "https://script.google.com/macros/s/AKfycbys5Wcptv0-aDZOwIunmeLdb9wp-cLIom5Svwi1buWrPHAvwZIYKKdoA4HEEfz8eMcpPw/exec", 
+    // 1. YOUR PLUMBING - Replace this with your Google Script URL
+    webAppUrl: "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE", 
     
-    services: [
-        { name: "Wash & Fold", price: "Ksh 500" },
-        { name: "Dry Cleaning", price: "Ksh 800" },
-        { name: "Duvet Cleaning", price: "Ksh 1,200" },
-        { name: "Ironing Only", price: "Ksh 300" }
+    // 2. THE SERVICE INVENTORY (From the Flyer)
+    categories: [
+        {
+            name: "Laundry Baskets",
+            items: [
+                { id: "l-basket", name: "Large Laundry Basket", price: 450 },
+                { id: "s-basket", name: "Small Laundry Basket", price: 350 },
+                { id: "weigh", name: "Weighing Option (per kg)", price: 50, note: "Min 5kg" }
+            ]
+        },
+        {
+            name: "Duvets & Blankets",
+            items: [
+                { id: "s-duvet", name: "Small Duvet (4x6)", price: 300, note: "Free bedsheet/pillowcase wash" },
+                { id: "m-duvet", name: "Medium Duvet (5x6)", price: 350, note: "Free bedsheet/pillowcase wash" },
+                { id: "l-duvet", name: "Large Duvet (6x6)", price: 450, note: "Free bedsheet/pillowcase wash" },
+                { id: "blanket", name: "Normal Blanket", price: 200 }
+            ]
+        },
+        {
+            name: "Special Services",
+            items: [
+                { id: "carpet", name: "Carpet Cleaning", price: 500 },
+                { id: "sofa", name: "Sofa Cleaning (per seater)", price: 450 },
+                { id: "shoes", name: "Shoes (per pair)", price: 90 },
+                { id: "mattress", name: "Mattress Cleaning", price: 1000, note: "Starts from 1k" }
+            ]
+        }
     ],
 
-    phone: "0712345678",
-    location: "Section 9, Thika"
+    // 3. TARGET LOCATIONS
+    estates: ["Section 9", "Landless", "Ngoingwa", "Makongeni", "Kenyatta Highway", "Blue Post", "Imperial-Runda Road"],
+
+    // 4. BUSINESS INFO
+    whatsappNumber: "254758811941",
+    location: "Imperial-Runda road (Newly constructed containers)"
 };
 
-// This matches your HTML's "const cfg = window.config;"
 window.config = businessConfig;
