@@ -3,53 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SwiftClean Booking</title>
+    <title>SwiftClean Booking Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* High-end UI refinements */
-        .service-card.active { border-color: #0ea5e9; background-color: #f0f9ff; border-width: 2px; transform: translateY(-2px); }
-        .qty-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: bold; background: #f8fafc; border: 1px solid #e2e8f0; transition: all 0.2s; }
-        .qty-btn:active { background: #e2e8f0; transform: scale(0.9); }
-        input::placeholder, textarea::placeholder { font-size: 0.9rem; color: #94a3b8; }
+        .service-card.active { border-color: #0ea5e9; background-color: #f0f9ff; border-width: 2px; }
+        .qty-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 14px; font-weight: bold; background: #f8fafc; border: 1px solid #e2e8f0; }
+        .qty-btn:active { background: #e2e8f0; transform: scale(0.95); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased pb-32">
+<body class="bg-gray-50 text-gray-900 font-sans pb-40">
 
-    <header id="header-bg" class="p-10 text-white shadow-xl text-center transition-all duration-500">
+    <header id="header-bg" class="p-10 text-white shadow-xl text-center">
         <h1 id="biz-name" class="text-3xl font-black uppercase tracking-tighter"></h1>
         <p id="biz-tagline" class="mt-2 text-sm font-medium opacity-90 italic"></p>
     </header>
 
     <main class="max-w-md mx-auto p-4 space-y-8">
-        
         <section class="bg-white rounded-[2rem] shadow-sm p-6 border border-gray-100">
             <h2 class="text-lg font-black mb-5 flex items-center gap-3">
-                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs shadow-lg shadow-blue-200">1</span>
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">1</span>
                 Your Details
             </h2>
             <div class="space-y-4">
-                <input type="text" id="cust-name" placeholder="Full Name (e.g. John Doe)" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
-                <input type="tel" id="cust-phone" placeholder="M-Pesa Number (07...)" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
-                <textarea id="location-desc" placeholder="Precise Location (Estate, Building, Apartment No.)" rows="3" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all"></textarea>
+                <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="tel" id="cust-phone" placeholder="Phone (M-Pesa)" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+                <textarea id="location-desc" placeholder="Precise Location (Estate, Building, Apartment No.)" rows="3" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none"></textarea>
             </div>
         </section>
 
         <section id="services-master" class="space-y-8">
             <h2 class="text-lg font-black px-2 flex items-center gap-3">
-                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs shadow-lg shadow-blue-200">2</span>
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">2</span>
                 Choose Services
             </h2>
-            </section>
-
+        </section>
     </main>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-gray-200 p-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-50">
+    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50">
         <div class="max-w-md mx-auto flex items-center justify-between">
-            <div class="space-y-0.5">
-                <p class="text-[10px] text-gray-400 uppercase font-black tracking-[0.2em]">Estimate</p>
+            <div>
+                <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Est. Total</p>
                 <p id="total-price" class="text-2xl font-black text-blue-600">Ksh 0</p>
             </div>
-            <button id="submit-btn" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black text-sm tracking-widest shadow-xl shadow-blue-200 hover:bg-blue-700 active:scale-95 transition-all">
+            <button id="submit-btn" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg active:scale-95 transition-all">
                 BOOK NOW
             </button>
         </div>
@@ -61,39 +57,30 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const cfg = window.config;
-            if(!cfg) return alert("System Error: Config missing.");
-
-            // Apply Branding
             document.getElementById('biz-name').textContent = cfg.businessName;
             document.getElementById('biz-tagline').textContent = cfg.tagline;
             document.getElementById('header-bg').style.backgroundColor = cfg.primaryColor;
             document.getElementById('submit-btn').style.backgroundColor = cfg.primaryColor;
 
-            // Render Menu
             const master = document.getElementById('services-master');
             cfg.categories.forEach(cat => {
-                let catHtml = `<div class="mb-10"><h3 class="text-[11px] font-black text-gray-400 uppercase tracking-[0.25em] mb-5 px-2">${cat.name}</h3><div class="grid gap-4">`;
-                
+                let catHtml = `<div class="mb-10"><h3 class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">${cat.name}</h3><div class="grid gap-4">`;
                 cat.items.forEach(item => {
                     catHtml += `
-                        <div id="card-${item.id}" class="service-card bg-white p-5 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300">
+                        <div id="card-${item.id}" class="service-card bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm transition-all">
                             <div class="flex justify-between items-center cursor-pointer" onclick="toggleItem('${item.id}')">
-                                <div class="pr-4">
-                                    <span class="font-bold text-gray-800 text-base block">${item.name}</span>
-                                    ${item.note ? `<p class="text-[10px] text-blue-500 font-bold mt-1 uppercase tracking-wider">★ ${item.note}</p>` : ''}
+                                <div>
+                                    <span class="font-bold text-gray-800 block">${item.name}</span>
+                                    ${item.note ? `<p class="text-[10px] text-blue-500 font-bold mt-1 uppercase">★ ${item.note}</p>` : ''}
                                 </div>
-                                <div class="text-right">
-                                    <span class="text-blue-600 font-black text-lg">Ksh ${item.price}</span>
-                                    <p class="text-[9px] text-gray-300 uppercase font-bold">${item.type === 'qty' ? 'Per ' + (item.unit || 'unit') : 'Flat rate'}</p>
-                                </div>
+                                <span class="text-blue-600 font-black">Ksh ${item.price}</span>
                             </div>
-                            
-                            <div id="qty-wrapper-${item.id}" class="hidden mt-5 pt-5 border-t border-gray-50 flex justify-between items-center">
-                                <span class="text-xs font-black text-gray-400 uppercase tracking-tighter">Adjust Quantity:</span>
+                            <div id="qty-wrapper-${item.id}" class="hidden mt-4 pt-4 border-t border-dashed flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Adjust ${item.unit || 'qty'}:</span>
                                 <div class="flex items-center gap-6">
-                                    <button onclick="changeQty('${item.id}', -1)" class="qty-btn text-gray-400 hover:text-red-500">-</button>
-                                    <span id="qty-val-${item.id}" class="font-black text-xl text-gray-800">1</span>
-                                    <button onclick="changeQty('${item.id}', 1)" class="qty-btn text-blue-600 hover:bg-blue-50">+</button>
+                                    <button onclick="changeQty('${item.id}', -1)" class="qty-btn">-</button>
+                                    <span id="qty-val-${item.id}" class="font-black text-lg">1</span>
+                                    <button onclick="changeQty('${item.id}', 1)" class="qty-btn">+</button>
                                 </div>
                             </div>
                         </div>`;
@@ -116,11 +103,11 @@
             if (cart[id]) {
                 delete cart[id];
                 card.classList.remove('active');
-                if(item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.add('hidden');
+                if (item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.add('hidden');
             } else {
                 cart[id] = 1;
                 card.classList.add('active');
-                if(item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.remove('hidden');
+                if (item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.remove('hidden');
             }
             updateTotal();
         }
@@ -135,26 +122,23 @@
             let total = 0;
             for (let id in cart) {
                 let item = findItem(id);
-                let price = item.price;
-                // Business Logic: 3+ pairs of shoes @85/-
-                if (id === 'shoes' && cart[id] >= 3) price = 85;
+                let price = (id === 'shoes' && cart[id] >= 3) ? 85 : item.price;
                 total += (price * cart[id]);
             }
             document.getElementById('total-price').textContent = `Ksh ${total}`;
         }
 
         document.getElementById('submit-btn').addEventListener('click', function() {
-            const btn = this;
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
             const location = document.getElementById('location-desc').value.trim();
             const finalTotal = document.getElementById('total-price').textContent;
 
-            if (!name || !phone || !location) return alert("Please complete all details in Step 1.");
-            if (Object.keys(cart).length === 0) return alert("Please select at least one service in Step 2.");
+            if (!name || !phone || !location) return alert("Please fill all details!");
+            if (Object.keys(cart).length === 0) return alert("Select at least one service.");
 
-            btn.disabled = true;
-            btn.innerHTML = `<span class="animate-pulse">PROCESSING...</span>`;
+            this.disabled = true;
+            this.textContent = "SENDING...";
 
             let summary = [];
             for (let id in cart) {
@@ -163,32 +147,24 @@
             }
             const itemsList = summary.join(", ");
 
-            const params = new URLSearchParams({
-                name: name, 
-                phone: phone, 
-                estate: location,
-                services: itemsList, 
-                totalPrice: finalTotal
-            });
+            const params = new URLSearchParams({ name, phone, estate: location, services: itemsList, totalPrice: finalTotal });
 
-            // LOG & REDIRECT
             fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
                 .then(() => {
-                    const msg = `*NEW BOOKING: SWIFTCLEAN*\n\n` +
-                                `*Client:* ${name}\n` +
-                                `*Phone:* ${phone}\n` +
-                                `*Location:* ${location}\n` +
-                                `*Services:* ${itemsList}\n` +
-                                `*Total Estimate:* ${finalTotal}\n\n` +
-                                `_Sent from SwiftClean Web Portal_`;
-                    
+                    const msg = `*ORDER: #${Date.now().toString().slice(-4)}*\n` +
+                                `---------------------------\n` +
+                                `*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n` +
+                                `*Items:* ${itemsList}\n*Est. Total:* ${finalTotal}\n` +
+                                `---------------------------\n` +
+                                `_Note: Mattress/Weight prices verified at pick-up._\n\n` +
+                                `*PAYMENT:* ${window.config.paymentType} ${window.config.tillNumber} (${window.config.officialName})\n\n` +
+                                `*STATUS TRACKING:*\n` +
+                                `[ ] Picked Up\n` +
+                                `[ ] Cleaned\n` +
+                                `[ ] Returned & Paid`;
                     window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
                 })
-                .catch(() => {
-                    alert("Submission failed. Check your internet and try again.");
-                    btn.disabled = false;
-                    btn.textContent = "BOOK NOW";
-                });
+                .catch(() => { alert("Error."); this.disabled = false; });
         });
     </script>
 </body>
