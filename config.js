@@ -2,9 +2,12 @@ const businessConfig = {
     businessName: "SwiftClean Laundry",
     tagline: "Free pick up and delivery in Thika and all areas around.",
     primaryColor: "#0ea5e9",
-    // STEP A: Replace the URL below with your Google Apps Script Web App URL
+    // STEP A: Replace with your Google Apps Script Web App URL
     webAppUrl: "https://script.google.com/macros/s/XXXXX/exec", 
     whatsappNumber: "254758811941",
+    paymentType: "Buy Goods",
+    tillNumber: "5919424",
+    officialName: "SWIFTCLEAN SERVICES",
     
     categories: [
         {
@@ -12,7 +15,7 @@ const businessConfig = {
             items: [
                 { id: "l-basket", name: "Large Laundry Basket", price: 450, type: "qty", unit: "basket" },
                 { id: "s-basket", name: "Small Laundry Basket", price: 350, type: "qty", unit: "basket" },
-                { id: "weighing", name: "Weighing Option", price: 50, type: "qty", unit: "kg", note: "Min 5kg" }
+                { id: "weighing", name: "General Laundry (By Weight)", price: 50, type: "qty", unit: "kg", note: "Final weight verified by our scale at pick-up." }
             ]
         },
         {
@@ -28,7 +31,7 @@ const businessConfig = {
             name: "Cleaning & Special Services",
             items: [
                 { id: "sofa", name: "Sofa Cleaning", price: 450, type: "qty", unit: "seater" },
-                { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Price: 1k - 1.5k" },
+                { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Range: 1k - 1.5k (Verified at pick-up)" },
                 { id: "carpet", name: "Carpet Cleaning", price: 500, type: "qty", unit: "unit", note: "Free doormat wash" },
                 { id: "matt", name: "Matt Cleaning", price: 350, type: "qty", unit: "unit" },
                 { id: "doormat", name: "Doormat Cleaning", price: 100, type: "qty", unit: "unit" },
@@ -36,19 +39,12 @@ const businessConfig = {
             ]
         },
         {
-            name: "House Cleaning",
+            name: "House & Pest Control",
             items: [
-                { id: "single", name: "Single Room", price: 1200, type: "qty", unit: "room" },
-                { id: "bedsitter", name: "Bedsitter", price: 2000, type: "qty", unit: "unit" },
-                { id: "one-bed", name: "1 Bedroom", price: 3000, type: "qty", unit: "unit" },
-                { id: "two-bed", name: "2 Bedroom", price: 4000, type: "qty", unit: "unit" }
-            ]
-        },
-        {
-            name: "Pest Control",
-            items: [
-                { id: "fumigation", name: "Full Fumigation", price: 2500, type: "qty", unit: "service", note: "6-month guarantee" },
-                { id: "bedbugs", name: "Bedbug Treatment", price: 1000, type: "qty", unit: "room" }
+                { id: "bedsitter", name: "Bedsitter Cleaning", price: 2000, type: "flat" },
+                { id: "one-bed", name: "1 Bedroom Cleaning", price: 3000, type: "flat" },
+                { id: "two-bed", name: "2 Bedroom Cleaning", price: 4000, type: "flat" },
+                { id: "fumigation", name: "Full Fumigation", price: 2500, type: "qty", unit: "service", note: "6-month guarantee" }
             ]
         }
     ]
