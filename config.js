@@ -1,55 +1,64 @@
-const businessConfig = {
+const BusinessConfig = {
+    // 1. BRANDING & CONTACT
     businessName: "SwiftClean Laundry",
     tagline: "Free pick up and delivery in Thika and all areas around.",
-    primaryColor: "#0ea5e9",
-    // CRITICAL: Ensure you replace the placeholder below with your actual Google Web App URL
-    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
+    primaryColor: "#0ea5e9", // Sky Blue
     whatsappNumber: "254758811941",
-    paymentType: "Buy Goods",
-    tillNumber: "5919424",
-    officialName: "SWIFTCLEAN SERVICES",
     
+    // 2. PAYMENT DETAILS (Used for the WhatsApp Message)
+    paymentDetails: {
+        type: "M-Pesa Buy Goods",
+        tillNumber: "5919424",
+        officialName: "SWIFTCLEAN SERVICES"
+    },
+
+    // 3. THE ENGINE URL
+    // Ensure this is the Version 13 URL from Google Deployment
+    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
+    
+    // 4. SERVICE CATEGORIES
     categories: [
         {
-            name: "Laundry (Wash, Dry, Fold)",
+            name: "🧺 Laundry (Wash, Dry, Fold)",
             items: [
-                { id: "weight-standard", name: "Standard Laundry (By Weight)", price: 70, type: "qty", unit: "kg", note: "Above 5kg @50/kg | Below 5kg @70/kg" },
-                { id: "weight-express", name: "Express/Instant (By Weight)", price: 90, type: "qty", unit: "kg", note: "Wash, Dry & Fold while you wait" },
-                { id: "single-cloth", name: "Single Item Wash", price: 50, type: "qty", unit: "clothe" }
+                { id: "weight-std", name: "Standard Laundry", price: 70, type: "qty", unit: "kg", note: "Below 5kg @70/kg | Above 5kg @50/kg" },
+                { id: "weight-exp", name: "Express/Instant", price: 90, type: "qty", unit: "kg", note: "Ready in hours" },
+                { id: "single-cloth", name: "Single Item Wash", price: 50, type: "qty", unit: "clothe", note: "Minimum 5 items" }
             ]
         },
         {
-            name: "Baskets & Bedding",
+            name: "🛌 Baskets & Bedding",
             items: [
                 { id: "l-basket", name: "Large Laundry Basket", price: 460, type: "qty", unit: "basket" },
                 { id: "s-basket", name: "Small Laundry Basket", price: 360, type: "qty", unit: "basket" },
-                { id: "s-duvet", name: "Small Duvet (4x6)", price: 300, type: "qty", unit: "unit", note: "Free bedsheet/pillowcase wash" },
-                { id: "m-duvet", name: "Medium Duvet (5x6)", price: 350, type: "qty", unit: "unit", note: "Free bedsheet/pillowcase wash" },
-                { id: "l-duvet", name: "Large Duvet (6x6)", price: 450, type: "qty", unit: "unit", note: "Free bedsheet/pillowcase wash" },
+                { id: "s-duvet", name: "Small Duvet (4x6)", price: 300, type: "qty", unit: "unit", note: "+ Free Bedsheet wash" },
+                { id: "m-duvet", name: "Medium Duvet (5x6)", price: 350, type: "qty", unit: "unit", note: "+ Free Bedsheet wash" },
+                { id: "l-duvet", name: "Large Duvet (6x6)", price: 450, type: "qty-l", unit: "unit", note: "+ Free Bedsheet wash" },
                 { id: "blanket", name: "Normal Blanket", price: 200, type: "qty", unit: "unit" }
             ]
         },
         {
-            name: "Cleaning & Special Services",
+            name: "🧼 Deep Cleaning Services",
             items: [
-                { id: "bed-cleaning", name: "Bed Cleaning", price: 800, type: "qty", unit: "unit", note: "Deep vacuum and steam" },
-                { id: "sofa", name: "Sofa Cleaning", price: 450, type: "qty", unit: "seater", note: "Price is per seater" },
-                { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Range: 1k - 1.5k (Verified at pick-up)" },
-                { id: "carpet", name: "Carpet Cleaning", price: 500, type: "qty", unit: "unit", note: "Free doormat wash" },
-                { id: "mat-cleaning", name: "Normal Mat Cleaning", price: 350, type: "qty", unit: "unit" },
+                { id: "bed-deep", name: "Bed Cleaning", price: 800, type: "qty", unit: "unit", note: "Deep vacuum & steam sanitization" },
+                { id: "sofa", name: "Sofa Cleaning", price: 450, type: "qty", unit: "seater", note: "Price per seater" },
+                { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Estimated: 1k - 1.5k" },
+                { id: "carpet", name: "Carpet Cleaning", price: 500, type: "qty", unit: "unit", note: "+ Free Doormat wash" },
                 { id: "shoes", name: "Shoes Cleaning", price: 90, type: "qty", unit: "pair", note: "3+ pairs @85/-" }
             ]
         },
         {
-            name: "Home Cleaning & Others",
+            name: "🏠 Home Cleaning & Others",
             items: [
                 { id: "single-room", name: "Single Room", price: 1200, type: "flat" },
                 { id: "bedsitter", name: "Bedsitter", price: 2000, type: "flat" },
                 { id: "one-bed", name: "1 Bedroom", price: 3000, type: "flat" },
                 { id: "two-bed", name: "2 Bedroom", price: 4000, type: "flat" },
-                { id: "fumigation", name: "Fumigation", price: 0, type: "flat", note: "COMING SOON" }
+                { id: "fumigation", name: "Fumigation", price: 0, type: "flat", note: "SERVICE COMING SOON" }
             ]
         }
     ]
 };
-window.config = businessConfig;
+
+// Protect the config from accidental browser changes
+window.config = Object.freeze(BusinessConfig);
