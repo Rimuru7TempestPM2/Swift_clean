@@ -2,7 +2,7 @@ const businessConfig = {
     businessName: "SwiftClean Laundry",
     tagline: "Free pick up and delivery in Thika and all areas around.",
     primaryColor: "#0ea5e9",
-    webAppUrl: "PASTE_YOUR_NEW_URL_HERE", 
+    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
     whatsappNumber: "254758811941",
     paymentType: "Buy Goods",
     tillNumber: "5919424",
