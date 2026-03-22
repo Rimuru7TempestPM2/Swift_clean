@@ -1,4 +1,57 @@
-<script src="config.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftClean Booking Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .service-card.active { border-color: #0ea5e9; background-color: #f0f9ff; border-width: 2px; }
+        .qty-btn { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 14px; font-weight: bold; background: #f8fafc; border: 1px solid #e2e8f0; }
+        .qty-btn:active { background: #e2e8f0; transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans pb-40">
+
+    <header id="header-bg" class="p-10 text-white shadow-xl text-center">
+        <h1 id="biz-name" class="text-3xl font-black uppercase tracking-tighter"></h1>
+        <p id="biz-tagline" class="mt-2 text-sm font-medium opacity-90 italic"></p>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 space-y-8">
+        <section class="bg-white rounded-[2rem] shadow-sm p-6 border border-gray-100">
+            <h2 class="text-lg font-black mb-5 flex items-center gap-3">
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">1</span>
+                Your Details
+            </h2>
+            <div class="space-y-4">
+                <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="tel" id="cust-phone" placeholder="Phone (M-Pesa)" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+                <textarea id="location-desc" placeholder="Precise Location (Estate, Building, Apt No.)" rows="3" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none"></textarea>
+            </div>
+        </section>
+
+        <section id="services-master" class="space-y-8">
+            <h2 class="text-lg font-black px-2 flex items-center gap-3">
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">2</span>
+                Choose Services
+            </h2>
+        </section>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div>
+                <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Est. Total</p>
+                <p id="total-price" class="text-2xl font-black text-blue-600">Ksh 0</p>
+            </div>
+            <button id="submit-btn" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg active:scale-95 transition-all">
+                BOOK NOW
+            </button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
     <script>
         let cart = {}; 
 
@@ -16,8 +69,10 @@
                     catHtml += `
                         <div id="card-${item.id}" class="service-card bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm transition-all">
                             <div class="flex justify-between items-center cursor-pointer" onclick="toggleItem('${item.id}')">
-                                <div><span class="font-bold text-gray-800 block">${item.name}</span>
-                                ${item.note ? `<p class="text-[10px] text-blue-500 font-bold mt-1 uppercase">★ ${item.note}</p>` : ''}</div>
+                                <div>
+                                    <span class="font-bold text-gray-800 block">${item.name}</span>
+                                    ${item.note ? `<p class="text-[10px] text-blue-500 font-bold mt-1 uppercase">★ ${item.note}</p>` : ''}
+                                </div>
                                 <span class="text-blue-600 font-black">Ksh ${item.price}</span>
                             </div>
                             <div id="qty-wrapper-${item.id}" class="hidden mt-4 pt-4 border-t border-dashed flex justify-between items-center">
@@ -69,8 +124,16 @@
                 let item = findItem(id);
                 let qty = cart[id];
                 let currentPrice = item.price;
-                if (id === 'weight-standard') { currentPrice = (qty >= 5) ? 50 : 70; }
-                if (id === 'shoes' && qty >= 3) { currentPrice = 85; }
+
+                // SPECIAL LOGIC: Standard Weighing Discount
+                if (id === 'weight-standard') {
+                    currentPrice = (qty >= 5) ? 50 : 70;
+                }
+                // SPECIAL LOGIC: Shoes Discount
+                if (id === 'shoes' && qty >= 3) {
+                    currentPrice = 85;
+                }
+
                 total += (currentPrice * qty);
             }
             document.getElementById('total-price').textContent = `Ksh ${total}`;
@@ -82,11 +145,16 @@
             const location = document.getElementById('location-desc').value.trim();
             const finalTotal = document.getElementById('total-price').textContent;
 
-            if (!name || !phone || !location) return alert("Please fill all details!");
-            if (Object.keys(cart).length === 0) return alert("Select at least one service.");
+            // GHOST ORDER GUARD: Prevents empty data from hitting the sheet
+            if (!name || !phone || !location) {
+                return alert("Tafadhali, fill in your Name, Phone, and Location before booking.");
+            }
+            if (Object.keys(cart).length === 0) {
+                return alert("Please select at least one service.");
+            }
 
             this.disabled = true;
-            this.textContent = "SECURELY BOOKING...";
+            this.textContent = "SYNCING SHEET...";
 
             let summary = [];
             for (let id in cart) {
@@ -95,11 +163,12 @@
             }
             const itemsList = summary.join(", ");
 
-            // ENHANCED: Only hit the spreadsheet if we have real data
             const params = new URLSearchParams({ name, phone, estate: location, services: itemsList, totalPrice: finalTotal });
 
+            // SEND TO SPREADSHEET
             fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
                 .then(() => {
+                    // PREPARE WHATSAPP MESSAGE
                     const msg = `*ORDER: #${Date.now().toString().slice(-4)}*\n` +
                                 `---------------------------\n` +
                                 `*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n` +
@@ -111,11 +180,12 @@
                                 `[ ] Picked Up\n` +
                                 `[ ] Cleaned\n` +
                                 `[ ] Returned & Paid`;
+                    
                     window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
                 })
                 .catch(() => { 
-                    alert("Connection issue. Please try again."); 
-                    this.disabled = false; 
+                    alert("Network error. Your booking might not have been recorded. Please try again.");
+                    this.disabled = false;
                     this.textContent = "BOOK NOW";
                 });
         });
