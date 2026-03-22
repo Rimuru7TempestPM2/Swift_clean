@@ -2,8 +2,8 @@ const businessConfig = {
     businessName: "SwiftClean Laundry",
     tagline: "Free pick up and delivery in Thika and all areas around.",
     primaryColor: "#0ea5e9",
-    // STEP A: Replace with your Google Apps Script Web App URL
-    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
+    // PASTE YOUR GOOGLE SCRIPT URL BELOW
+    webAppUrl: "https://script.google.com/macros/s/XXXXX/exec", 
     whatsappNumber: "254758811941",
     paymentType: "Buy Goods",
     tillNumber: "5919424",
@@ -11,16 +11,18 @@ const businessConfig = {
     
     categories: [
         {
-            name: "Laundry Services",
+            name: "Laundry (Wash, Dry, Fold)",
             items: [
-                { id: "l-basket", name: "Large Laundry Basket", price: 450, type: "qty", unit: "basket" },
-                { id: "s-basket", name: "Small Laundry Basket", price: 350, type: "qty", unit: "basket" },
-                { id: "weighing", name: "General Laundry (By Weight)", price: 50, type: "qty", unit: "kg", note: "Final weight verified by our scale at pick-up." }
+                { id: "weight-standard", name: "Standard Laundry (By Weight)", price: 70, type: "qty", unit: "kg", note: "Above 5kg @50/kg | Below 5kg @70/kg" },
+                { id: "weight-express", name: "Express/Instant (By Weight)", price: 90, type: "qty", unit: "kg", note: "Wash, Dry & Fold while you wait" },
+                { id: "single-cloth", name: "Single Item Wash", price: 50, type: "qty", unit: "clothe" }
             ]
         },
         {
-            name: "Duvets & Bedding",
+            name: "Baskets & Bedding",
             items: [
+                { id: "l-basket", name: "Large Laundry Basket", price: 460, type: "qty", unit: "basket" },
+                { id: "s-basket", name: "Small Laundry Basket", price: 360, type: "qty", unit: "basket" },
                 { id: "s-duvet", name: "Small Duvet (4x6)", price: 300, type: "qty", unit: "unit", note: "Free bedsheet/pillowcase wash" },
                 { id: "m-duvet", name: "Medium Duvet (5x6)", price: 350, type: "qty", unit: "unit", note: "Free bedsheet/pillowcase wash" },
                 { id: "l-duvet", name: "Large Duvet (6x6)", price: 450, type: "qty", unit: "unit", note: "Free bedsheet/pillowcase wash" },
@@ -31,20 +33,22 @@ const businessConfig = {
             name: "Cleaning & Special Services",
             items: [
                 { id: "sofa", name: "Sofa Cleaning", price: 450, type: "qty", unit: "seater" },
-                { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Range: 1k - 1.5k (Verified at pick-up)" },
+                { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Range: 1k - 1.5k" },
+                { id: "beds", name: "Beds Cleaning", price: 1000, type: "qty", unit: "unit", note: "Range: 1k - 1.5k" },
                 { id: "carpet", name: "Carpet Cleaning", price: 500, type: "qty", unit: "unit", note: "Free doormat wash" },
-                { id: "matt", name: "Matt Cleaning", price: 350, type: "qty", unit: "unit" },
-                { id: "doormat", name: "Doormat Cleaning", price: 100, type: "qty", unit: "unit" },
-                { id: "shoes", name: "Shoes Cleaning", price: 90, type: "qty", unit: "pair", note: "3+ pairs @85/-" }
+                { id: "mat-cleaning", name: "Mat Cleaning", price: 350, type: "qty", unit: "unit" },
+                { id: "shoes", name: "Shoes Cleaning", price: 90, type: "qty", unit: "pair", note: "3+ pairs @85/-" },
+                { id: "doormat", name: "Doormat", price: 100, type: "qty", unit: "unit" }
             ]
         },
         {
-            name: "House & Pest Control",
+            name: "General House Cleaning",
             items: [
-                { id: "bedsitter", name: "Bedsitter Cleaning", price: 2000, type: "flat" },
-                { id: "one-bed", name: "1 Bedroom Cleaning", price: 3000, type: "flat" },
-                { id: "two-bed", name: "2 Bedroom Cleaning", price: 4000, type: "flat" },
-                { id: "fumigation", name: "Full Fumigation", price: 2500, type: "qty", unit: "service", note: "6-month guarantee" }
+                { id: "single-room", name: "Single Room", price: 1200, type: "flat" },
+                { id: "bedsitter", name: "Bedsitter", price: 2000, type: "flat" },
+                { id: "one-bed", name: "1 Bedroom", price: 3000, type: "flat" },
+                { id: "two-bed", name: "2 Bedroom", price: 4000, type: "flat" },
+                { id: "fumigation", name: "Fumigation Services", price: 1500, type: "qty", unit: "room" }
             ]
         }
     ]
