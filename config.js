@@ -3,7 +3,7 @@ const businessConfig = {
     tagline: "Free pick up and delivery in Thika and all areas around.",
     primaryColor: "#0ea5e9",
     // PASTE YOUR GOOGLE SCRIPT URL BELOW
-    webAppUrl: "https://script.google.com/macros/s/XXXXX/exec", 
+    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
     whatsappNumber: "254758811941",
     paymentType: "Buy Goods",
     tillNumber: "5919424",
