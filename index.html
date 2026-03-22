@@ -54,140 +54,68 @@
     <script src="config.js"></script>
     <script>
         let cart = {}; 
-
         document.addEventListener('DOMContentLoaded', () => {
             const cfg = window.config;
+            if(!cfg) { alert("Config not found!"); return; }
             document.getElementById('biz-name').textContent = cfg.businessName;
             document.getElementById('biz-tagline').textContent = cfg.tagline;
             document.getElementById('header-bg').style.backgroundColor = cfg.primaryColor;
             document.getElementById('submit-btn').style.backgroundColor = cfg.primaryColor;
-
             const master = document.getElementById('services-master');
             cfg.categories.forEach(cat => {
                 let catHtml = `<div class="mb-10"><h3 class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">${cat.name}</h3><div class="grid gap-4">`;
                 cat.items.forEach(item => {
-                    catHtml += `
-                        <div id="card-${item.id}" class="service-card bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm transition-all">
-                            <div class="flex justify-between items-center cursor-pointer" onclick="toggleItem('${item.id}')">
-                                <div>
-                                    <span class="font-bold text-gray-800 block">${item.name}</span>
-                                    ${item.note ? `<p class="text-[10px] text-blue-500 font-bold mt-1 uppercase">★ ${item.note}</p>` : ''}
-                                </div>
-                                <span class="text-blue-600 font-black">Ksh ${item.price}</span>
-                            </div>
-                            <div id="qty-wrapper-${item.id}" class="hidden mt-4 pt-4 border-t border-dashed flex justify-between items-center">
-                                <span class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Adjust ${item.unit || 'qty'}:</span>
-                                <div class="flex items-center gap-6">
-                                    <button onclick="changeQty('${item.id}', -1)" class="qty-btn">-</button>
-                                    <span id="qty-val-${item.id}" class="font-black text-lg">1</span>
-                                    <button onclick="changeQty('${item.id}', 1)" class="qty-btn">+</button>
-                                </div>
-                            </div>
-                        </div>`;
+                    catHtml += `<div id="card-${item.id}" class="service-card bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm transition-all">
+                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleItem('${item.id}')">
+                            <div><span class="font-bold text-gray-800 block">${item.name}</span>
+                            ${item.note ? `<p class="text-[10px] text-blue-500 font-bold mt-1 uppercase">★ ${item.note}</p>` : ''}</div>
+                            <span class="text-blue-600 font-black">Ksh ${item.price}</span>
+                        </div>
+                        <div id="qty-wrapper-${item.id}" class="hidden mt-4 pt-4 border-t border-dashed flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-tighter">Adjust Qty:</span>
+                            <div class="flex items-center gap-6"><button onclick="changeQty('${item.id}', -1)" class="qty-btn">-</button>
+                            <span id="qty-val-${item.id}" class="font-black text-lg">1</span>
+                            <button onclick="changeQty('${item.id}', 1)" class="qty-btn">+</button></div>
+                        </div></div>`;
                 });
                 catHtml += `</div></div>`;
                 master.innerHTML += catHtml;
             });
         });
-
-        function findItem(id) {
-            for (let cat of window.config.categories) {
-                let found = cat.items.find(i => i.id === id);
-                if (found) return found;
-            }
-        }
-
+        function findItem(id) { for (let cat of window.config.categories) { let found = cat.items.find(i => i.id === id); if (found) return found; } }
         function toggleItem(id) {
             const card = document.getElementById(`card-${id}`);
             const item = findItem(id);
-            if (cart[id]) {
-                delete cart[id];
-                card.classList.remove('active');
-                if (item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.add('hidden');
-            } else {
-                cart[id] = 1;
-                card.classList.add('active');
-                if (item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.remove('hidden');
-            }
+            if (cart[id]) { delete cart[id]; card.classList.remove('active'); if (item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.add('hidden');
+            } else { cart[id] = 1; card.classList.add('active'); if (item.type === 'qty') document.getElementById(`qty-wrapper-${id}`).classList.remove('hidden'); }
             updateTotal();
         }
-
-        function changeQty(id, delta) {
-            cart[id] = Math.max(1, (cart[id] || 1) + delta);
-            document.getElementById(`qty-val-${id}`).textContent = cart[id];
-            updateTotal();
-        }
-
+        function changeQty(id, delta) { cart[id] = Math.max(1, (cart[id] || 1) + delta); document.getElementById(`qty-val-${id}`).textContent = cart[id]; updateTotal(); }
         function updateTotal() {
             let total = 0;
             for (let id in cart) {
-                let item = findItem(id);
-                let qty = cart[id];
-                let currentPrice = item.price;
-
-                // SPECIAL LOGIC: Standard Weighing Discount
-                if (id === 'weight-standard') {
-                    currentPrice = (qty >= 5) ? 50 : 70;
-                }
-                // SPECIAL LOGIC: Shoes Discount
-                if (id === 'shoes' && qty >= 3) {
-                    currentPrice = 85;
-                }
-
+                let item = findItem(id); let qty = cart[id]; let currentPrice = item.price;
+                if (id === 'weight-standard') currentPrice = (qty >= 5) ? 50 : 70;
+                if (id === 'shoes' && qty >= 3) currentPrice = 85;
                 total += (currentPrice * qty);
             }
             document.getElementById('total-price').textContent = `Ksh ${total}`;
         }
-
         document.getElementById('submit-btn').addEventListener('click', function() {
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
-            const location = document.getElementById('location-desc').value.trim();
-            const finalTotal = document.getElementById('total-price').textContent;
-
-            // GHOST ORDER GUARD: Prevents empty data from hitting the sheet
-            if (!name || !phone || !location) {
-                return alert("Tafadhali, fill in your Name, Phone, and Location before booking.");
-            }
-            if (Object.keys(cart).length === 0) {
-                return alert("Please select at least one service.");
-            }
-
-            this.disabled = true;
-            this.textContent = "SYNCING SHEET...";
-
-            let summary = [];
-            for (let id in cart) {
-                let item = findItem(id);
-                summary.push(`${item.name} (x${cart[id]})`);
-            }
+            const loc = document.getElementById('location-desc').value.trim();
+            const total = document.getElementById('total-price').textContent;
+            if (!name || !phone || !loc) return alert("Please fill all details!");
+            if (Object.keys(cart).length === 0) return alert("Select a service.");
+            this.disabled = true; this.textContent = "SAVING...";
+            let summary = []; for (let id in cart) { let item = findItem(id); summary.push(`${item.name} (x${cart[id]})`); }
             const itemsList = summary.join(", ");
-
-            const params = new URLSearchParams({ name, phone, estate: location, services: itemsList, totalPrice: finalTotal });
-
-            // SEND TO SPREADSHEET
-            fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' })
-                .then(() => {
-                    // PREPARE WHATSAPP MESSAGE
-                    const msg = `*ORDER: #${Date.now().toString().slice(-4)}*\n` +
-                                `---------------------------\n` +
-                                `*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${location}\n` +
-                                `*Items:* ${itemsList}\n*Est. Total:* ${finalTotal}\n` +
-                                `---------------------------\n` +
-                                `_Note: Mattress/Weight prices verified at pick-up._\n\n` +
-                                `*PAYMENT:* ${window.config.paymentType} ${window.config.tillNumber}\n\n` +
-                                `*STATUS TRACKING:*\n` +
-                                `[ ] Picked Up\n` +
-                                `[ ] Cleaned\n` +
-                                `[ ] Returned & Paid`;
-                    
-                    window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-                })
-                .catch(() => { 
-                    alert("Network error. Your booking might not have been recorded. Please try again.");
-                    this.disabled = false;
-                    this.textContent = "BOOK NOW";
-                });
+            const params = new URLSearchParams({ name, phone, estate: loc, services: itemsList, totalPrice: total });
+            fetch(window.config.webAppUrl + "?" + params.toString(), { method: 'POST', mode: 'no-cors' }).then(() => {
+                const msg = `*NEW ORDER*\nClient: ${name}\nPhone: ${phone}\nLocation: ${loc}\nItems: ${itemsList}\nTotal: ${total}`;
+                window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+            });
         });
     </script>
 </body>
