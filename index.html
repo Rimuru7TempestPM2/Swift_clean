@@ -172,7 +172,7 @@
             fetch(finalUrl, { method: 'GET', mode: 'no-cors' });
 
             setTimeout(() => {
-                const msg = `*NEW ORDER - SWIFTCLEAN*\n---------------------------\n*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${loc}\n\n*Items:* ${summary}\n*Estimated Total:* ${tot}\n\n⚠️ _Note: Final prices confirmed upon pick-up._\n---------------------------\n*Payment: Buy Goods ${window.config.tillNumber}*`;
+                const msg = `*NEW ORDER - SWIFTCLEAN*\n---------------------------\n*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${loc}\n\n*Items:* ${summary}\n*Estimated Total:* ${tot}\n\n⚠️ _Note: Final prices confirmed upon pick-up._\n---------------------------\n*Payment: Buy Goods ${window.config.paymentDetails.tillNumber}(${window.config.PaymentDetails.officialName})*`;
                 
                 window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
                 
