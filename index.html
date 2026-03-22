@@ -122,8 +122,17 @@
             let total = 0;
             for (let id in cart) {
                 let item = findItem(id);
-                let price = (id === 'shoes' && cart[id] >= 3) ? 85 : item.price;
-                total += (price * cart[id]);
+                let qty = cart[id];
+                let currentPrice = item.price;
+
+                if (id === 'weight-standard') {
+                    currentPrice = (qty >= 5) ? 50 : 70;
+                }
+                if (id === 'shoes' && qty >= 3) {
+                    currentPrice = 85;
+                }
+
+                total += (currentPrice * qty);
             }
             document.getElementById('total-price').textContent = `Ksh ${total}`;
         }
