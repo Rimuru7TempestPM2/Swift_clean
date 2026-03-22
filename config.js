@@ -2,7 +2,8 @@ const businessConfig = {
     businessName: "SwiftClean Laundry",
     tagline: "Free pick up and delivery in Thika and all areas around.",
     primaryColor: "#0ea5e9",
-    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
+    // CRITICAL: Ensure you replace the placeholder below with your actual Google Web App URL
+    webAppUrl: "YOUR_NEW_DEPLOYMENT_URL_HERE", 
     whatsappNumber: "254758811941",
     paymentType: "Buy Goods",
     tillNumber: "5919424",
@@ -31,9 +32,9 @@ const businessConfig = {
         {
             name: "Cleaning & Special Services",
             items: [
+                { id: "bed-cleaning", name: "Bed Cleaning", price: 800, type: "qty", unit: "unit", note: "Deep vacuum and steam" },
                 { id: "sofa", name: "Sofa Cleaning", price: 450, type: "qty", unit: "seater", note: "Price is per seater" },
                 { id: "mattress", name: "Mattress Cleaning", price: 1000, type: "qty", unit: "unit", note: "Range: 1k - 1.5k (Verified at pick-up)" },
-                { id: "bed-cleaning", name: "Bed Cleaning", price: 800, type: "qty", unit: "unit", note: "Deep vacuum and steam" },
                 { id: "carpet", name: "Carpet Cleaning", price: 500, type: "qty", unit: "unit", note: "Free doormat wash" },
                 { id: "mat-cleaning", name: "Normal Mat Cleaning", price: 350, type: "qty", unit: "unit" },
                 { id: "shoes", name: "Shoes Cleaning", price: 90, type: "qty", unit: "pair", note: "3+ pairs @85/-" }
@@ -46,7 +47,7 @@ const businessConfig = {
                 { id: "bedsitter", name: "Bedsitter", price: 2000, type: "flat" },
                 { id: "one-bed", name: "1 Bedroom", price: 3000, type: "flat" },
                 { id: "two-bed", name: "2 Bedroom", price: 4000, type: "flat" },
-                { id: "fumigation", name: "Fumigation", price: 0, type: "flat", note: "COMING SOON - NOT OFFERED YET" }
+                { id: "fumigation", name: "Fumigation", price: 0, type: "flat", note: "COMING SOON" }
             ]
         }
     ]
