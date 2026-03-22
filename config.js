@@ -14,7 +14,7 @@ const BusinessConfig = {
 
     // 3. THE ENGINE URL
     // Ensure this is the Version 13 URL from Google Deployment
-    webAppUrl: "https://script.google.com/macros/s/AKfycby4kXHPtlR3oMTt2a4f472Xif5XMJcaKwC_j8MU4PDKhRtHMo53uHhXzt1nyQwLvDpfqg/exec", 
+    webAppUrl: "https://script.google.com/macros/s/AKfycbwM2MkRXmIgbSYv0KclszcC6o13quK4TlUMqfB5FTBLdMsTUuElRPiGCyaA5ZXTNe5Z/exec", 
     
     // 4. SERVICE CATEGORIES
     categories: [
