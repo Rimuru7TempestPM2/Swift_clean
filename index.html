@@ -42,10 +42,10 @@
     <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t p-6 shadow-2xl z-50">
         <div class="max-w-md mx-auto flex items-center justify-between">
             <div>
-                <p class="text-[10px] text-gray-400 uppercase font-black">Total Amount</p>
+                <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Total Amount</p>
                 <p id="total-price" class="text-2xl font-black text-blue-600">Ksh 0</p>
             </div>
-            <button id="submit-btn" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg">
+            <button id="submit-btn" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-colors">
                 BOOK NOW
             </button>
         </div>
@@ -132,14 +132,22 @@
             if (!name || !phone || !loc) return alert("Please fill Name, Phone, and Location.");
             if (Object.keys(cart).length === 0) return alert("Select at least one service.");
 
-            this.disabled = true; this.textContent = "SAVING...";
+            // 1. Prepare Summary
             let summary = Object.keys(cart).map(id => `${findItem(id).name} (x${cart[id]})`).join(", ");
 
-            fetch(window.config.webAppUrl + "?" + new URLSearchParams({ name, phone, estate: loc, services: summary, totalPrice: tot }), { method: 'POST', mode: 'no-cors' })
-                .then(() => {
-                    const msg = `*NEW ORDER*\n---------------------------\n*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${loc}\n*Items:* ${summary}\n*Total:* ${tot}\n---------------------------\n*Payment: Buy Goods ${window.config.tillNumber} (${window.config.officialName})*\n_Note: Weight/Mattress prices verified at pick-up._`;
-                    window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-                });
+            // 2. Background Save to Google Sheet (non-blocking)
+            fetch(window.config.webAppUrl + "?" + new URLSearchParams({ 
+                name: name, 
+                phone: phone, 
+                estate: loc, 
+                services: summary, 
+                totalPrice: tot 
+            }), { method: 'POST', mode: 'no-cors' });
+
+            // 3. Open WhatsApp Immediately
+            const msg = `*NEW ORDER*\n---------------------------\n*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${loc}\n*Items:* ${summary}\n*Total:* ${tot}\n---------------------------\n*Payment: Buy Goods ${window.config.tillNumber} (${window.config.officialName})*\n_Note: Weight/Mattress prices verified at pick-up._`;
+            
+            window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
         });
     </script>
 </body>
