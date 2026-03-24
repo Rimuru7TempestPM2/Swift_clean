@@ -23,7 +23,7 @@ const BusinessConfig = {
             items: [
                 { id: "weight-std", name: "Standard Laundry", price: 70, type: "qty", unit: "kg", note: "Below 5kg @70/kg | Above 5kg @50/kg" },
                 { id: "weight-exp", name: "Express/Instant", price: 90, type: "qty", unit: "kg", note: "Ready in hours" },
-                { id: "single-cloth", name: "Single Item Wash", price: 50, type: "qty", unit: "clothe", note: "Minimum 5 items" }
+                { id: "single-cloth", name: "Single Item Wash", price: 50, type: "qty", unit: "clothe" }
             ]
         },
         {
