@@ -8,8 +8,8 @@ const BusinessConfig = {
     // 2. PAYMENT DETAILS (Used for the WhatsApp Message)
     paymentDetails: {
         type: "M-Pesa Buy Goods",
-        tillNumber: "5919424",
-        officialName: "SWIFTCLEAN SERVICES"
+        tillNumber: "3305607",
+        officialName: "BWIRI LAUNDRY SOLUTIONS"
     },
 
     // 3. THE ENGINE URL
