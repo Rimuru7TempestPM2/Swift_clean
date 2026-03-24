@@ -10,7 +10,6 @@
         .qty-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: bold; background: #f8fafc; border: 1px solid #e2e8f0; }
         .qty-btn:active { background: #e2e8f0; transform: scale(0.9); }
         #submit-btn:disabled { cursor: wait; opacity: 0.6; }
-        /* Add a pulsing effect when saving */
         @keyframes pulse-save { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         .saving-pulse { animation: pulse-save 1s infinite; }
     </style>
@@ -30,8 +29,8 @@
             </h2>
             <div class="space-y-4">
                 <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
-                <input type="tel" id="cust-phone" placeholder="M-Pesa Number" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
-                <textarea id="location-desc" placeholder="Specific Location (e.g., Section 9, Blue Post area)" rows="2" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all"></textarea>
+                <input type="tel" id="cust-phone" placeholder="Phone Number" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                <textarea id="location-desc" placeholder="Specific Location (e.g., Section 9, Thika)" rows="2" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-blue-400 transition-all"></textarea>
             </div>
         </section>
 
@@ -69,18 +68,23 @@
     <script>
         let cart = {}; 
 
+        // 1. Initial Page Render from Config
         document.addEventListener('DOMContentLoaded', () => {
             const cfg = window.config;
+            if(!cfg) return alert("Config file missing!");
+
             document.getElementById('biz-name').textContent = cfg.businessName;
             document.getElementById('biz-tagline').textContent = cfg.tagline;
             document.getElementById('header-bg').style.backgroundColor = cfg.primaryColor;
             document.getElementById('submit-btn').style.backgroundColor = cfg.primaryColor;
             
             const master = document.getElementById('services-master');
+            let fullHtml = "";
+
             cfg.categories.forEach(cat => {
-                let html = `<div class="mb-10"><h3 class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">${cat.name}</h3><div class="grid gap-4">`;
+                let catSection = `<div class="mb-10"><h3 class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 px-2">${cat.name}</h3><div class="grid gap-4">`;
                 cat.items.forEach(item => {
-                    html += `
+                    catSection += `
                         <div id="card-${item.id}" class="service-card bg-white p-5 rounded-[1.5rem] border shadow-sm transition-all cursor-pointer" onclick="toggleItem('${item.id}')">
                             <div class="flex justify-between items-start">
                                 <div class="pr-4">
@@ -99,11 +103,18 @@
                             </div>
                         </div>`;
                 });
-                master.innerHTML += html + `</div></div>`;
+                fullHtml += catSection + `</div></div>`;
             });
+            master.innerHTML += fullHtml;
         });
 
-        function findItem(id) { for (let cat of window.config.categories) { let found = cat.items.find(i => i.id === id); if (found) return found; } }
+        // 2. Logic Helpers
+        function findItem(id) { 
+            for (let cat of window.config.categories) { 
+                let found = cat.items.find(i => i.id === id); 
+                if (found) return found; 
+            } 
+        }
         
         function toggleItem(id) {
             const card = document.getElementById(`card-${id}`);
@@ -129,36 +140,34 @@
         function updateTotal() {
             let total = 0;
             const summaryList = document.getElementById('summary-list');
-            const summaryCard = document.getElementById('summary-card');
             let summaryHtml = "";
 
             for (let id in cart) {
                 let item = findItem(id); 
                 let qty = cart[id]; 
-                let p = item.price;
-                if (id === 'weight-standard') p = (qty >= 5) ? 50 : 70;
-                total += (p * qty);
+                total += (item.price * qty);
                 summaryHtml += `• ${item.name} (x${qty})<br>`;
             }
             
             document.getElementById('total-price').textContent = `Ksh ${total}`;
             summaryList.innerHTML = summaryHtml;
-            summaryCard.classList.toggle('hidden', Object.keys(cart).length === 0);
+            document.getElementById('summary-card').classList.toggle('hidden', Object.keys(cart).length === 0);
         }
 
+        // 3. Submission Logic
         document.getElementById('submit-btn').addEventListener('click', function() {
             const name = document.getElementById('cust-name').value.trim();
             const phone = document.getElementById('cust-phone').value.trim();
             const loc = document.getElementById('location-desc').value.trim();
-            const tot = document.getElementById('total-price').textContent;
+            const tot = document.getElementById('total-price').textContent.replace('Ksh ', '');
 
             if (!name || !phone || !loc || Object.keys(cart).length === 0) {
-                return alert("Please complete your details and select at least one service.");
+                return alert("Please enter your details and select services.");
             }
 
             const btn = this;
             btn.disabled = true;
-            btn.textContent = "SENDING TO GOOGLE...";
+            btn.textContent = "SENDING...";
             btn.classList.add('saving-pulse');
 
             let summary = Object.keys(cart).map(id => {
@@ -166,13 +175,13 @@
                 return `${item.name} (x${cart[id]})`;
             }).join(", ");
 
+            // Google Sheets Log
             const finalUrl = `${window.config.webAppUrl}?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&estate=${encodeURIComponent(loc)}&services=${encodeURIComponent(summary)}&totalPrice=${encodeURIComponent(tot)}`;
-            
-            // Fire and Forget fetch
             fetch(finalUrl, { method: 'GET', mode: 'no-cors' });
 
+            // Delay for WhatsApp Redirect
             setTimeout(() => {
-                const msg = `*NEW ORDER - SWIFTCLEAN*\n---------------------------\n*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${loc}\n\n*Items:* ${summary}\n*Estimated Total:* ${tot}\n\n⚠️ _Note: Final prices confirmed upon pick-up._\n---------------------------\n*Payment: Buy Goods ${window.config.paymentDetails.tillNumber}(${window.config.paymentDetails.officialName})*`;
+                const msg = `*NEW ORDER - SWIFTCLEAN*\n---------------------------\n*Client:* ${name}\n*Phone:* ${phone}\n*Location:* ${loc}\n\n*Items:* ${summary}\n*Estimated Total:* Ksh ${tot}\n\n⚠️ _Note: Final prices confirmed at pick-up._\n---------------------------\n*Payment: Buy Goods ${window.config.paymentDetails.tillNumber}*`;
                 
                 window.location.href = `https://wa.me/${window.config.whatsappNumber}?text=${encodeURIComponent(msg)}`;
                 
