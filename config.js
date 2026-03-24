@@ -31,9 +31,9 @@ const BusinessConfig = {
             items: [
                 { id: "l-basket", name: "Large Laundry Basket", price: 460, type: "qty", unit: "basket" },
                 { id: "s-basket", name: "Small Laundry Basket", price: 360, type: "qty", unit: "basket" },
-                { id: "s-duvet", name: "Small Duvet (4x6)", price: 300, type: "qty", unit: "unit", note: "+ Free Bedsheet wash" },
-                { id: "m-duvet", name: "Medium Duvet (5x6)", price: 350, type: "qty", unit: "unit", note: "+ Free Bedsheet wash" },
-                { id: "l-duvet", name: "Large Duvet (6x6)", price: 450, type: "qty-l", unit: "unit", note: "+ Free Bedsheet wash" },
+                { id: "s-duvet", name: "Small Duvet (4x6)", price: 300, type: "qty", unit: "unit", note: "+ Free Bedsheet & pillowcase wash" },
+                { id: "m-duvet", name: "Medium Duvet (5x6)", price: 350, type: "qty", unit: "unit", note: "+ Free Bedsheet & pillowcase wash" },
+                { id: "l-duvet", name: "Large Duvet (6x6)", price: 450, type: "qty-l", unit: "unit", note: "+ Free Bedsheet & pillowcase wash" },
                 { id: "blanket", name: "Normal Blanket", price: 200, type: "qty", unit: "unit" }
             ]
         },
